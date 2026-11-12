@@ -48,6 +48,6 @@ $('imp').onchange=async e=>{const file=e.target.files[0];if(!file)return;const m
  if(c.n<0||c.c<0)return alert('Need columns named "name" and "church".');
  const g=(r,i)=>i<0?'':(r[i]||'').trim(),rows=m.slice(1).map(r=>({name:g(r,c.n),phone:g(r,c.p),age:g(r,c.a),church:g(r,c.c),diet:g(r,c.d),paid:/^(y|yes|true|1|paid)/i.test(g(r,c.y))}));
  if(!confirm('Import '+rows.length+' registrants?'))return;
- try{const d=await api('import',{rows});$('ierr').textContent='Added '+d.added+'. Skipped '+d.skipped.length+(d.skipped.length?': '+d.skipped.slice(0,8).join('; '):'');await load()}catch(x){$('ierr').style.color='var(--r)';$('ierr').textContent=x.message}e.target.value=''};
+ try{const d=await api('import',{rows});$('ierr').textContent='Added '+d.added+', updated '+(d.updated||0)+'. Skipped '+d.skipped.length+(d.skipped.length?': '+d.skipped.slice(0,8).join('; '):'');await load()}catch(x){$('ierr').style.color='var(--r)';$('ierr').textContent=x.message}e.target.value=''};
 if(pw)load();setInterval(()=>{if(pw&&!$('dlg').open&&!document.hidden)load()},5000);
 </script></body></html>
