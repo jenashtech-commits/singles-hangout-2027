@@ -7,13 +7,15 @@
 <div class="err" id="lerr"></div><button class="btn" id="lgo" style="width:100%">Sign in</button></div>
 <div id="dash" hidden>
 <div class="grid" style="grid-template-columns:repeat(4,1fr)"><div class="stat"><b id="aN">0</b><small>Registered</small></div><div class="stat"><b id="aP">0</b><small>Paid</small></div><div class="stat"><b id="aU">0</b><small>Unpaid</small></div><div class="stat"><b id="aM">0</b><small>GHS collected</small></div></div>
-<div class="card" style="margin-top:16px"><div class="bar"><input type="text" id="q" placeholder="Search name, phone, ref…"><select id="fa"><option value="">All assemblies</option><option>Central</option><option>Maranatha</option><option>Nsumfa</option><option>Berea</option><option>Bethel</option><option>NIC</option></select>
+<div class="card" style="margin-top:16px"><div class="bar"><input type="text" id="q" placeholder="Search name, phone, ref…"><select id="fa"><option value="">All assemblies</option><option>Central</option><option>Maranatha</option><option>Nsumfa</option><option>Berea</option><option>Bethel</option><option>NIC</option><option>External</option></select>
 <select id="fp"><option value="">All payments</option><option value="1">Paid</option><option value="0">Unpaid</option></select><button class="btn sm g" id="csv">Download CSV</button><button class="btn sm" id="out">Sign out</button></div>
-<div class="tbl"><table><thead><tr><th>Ref</th><th>Name</th><th>Phone</th><th>Age</th><th>Assembly</th><th>Diet</th><th>Paid</th><th></th></tr></thead><tbody id="rows"></tbody></table></div><p class="hint"><span class="dot"></span>Updates automatically every few seconds.</p></div></div></main>
+<div class="tbl"><table><thead><tr><th>Ref</th><th>Name</th><th>Phone</th><th>Age</th><th>Assembly</th><th>Diet</th><th>Paid</th><th></th></tr></thead><tbody id="rows"></tbody></table></div><p class="hint"><span class="dot"></span>Updates automatically every few seconds.</p></div>
+<div class="card" style="margin-top:16px"><b>Import registrants (CSV)</b><p class="hint">Columns: name, phone, age, church (phone, age, diet, paid are optional). Duplicates are skipped.</p>
+<input type="file" id="imp" accept=".csv,text/csv"><div class="err" id="ierr" style="color:var(--g2)"></div></div></div></main>
 <dialog id="dlg"><form id="ef" method="dialog"><h2 style="margin-top:0">Edit registrant</h2>
 <label for="en">Full name</label><input type="text" id="en"><label for="ep">Phone</label><input type="tel" id="ep">
-<label for="ea">Age range</label><select id="ea"><option>Young Adult (20–25)</option><option>Young Adult (26–35)</option><option>Young Adult (36+)</option></select>
-<label for="ec">Assembly</label><select id="ec"><option>Central</option><option>Maranatha</option><option>Nsumfa</option><option>Berea</option><option>Bethel</option><option>NIC</option></select>
+<label for="ea">Age range</label><select id="ea"><option value="">— not provided —</option><option>Young Adult (20–25)</option><option>Young Adult (26–35)</option><option>Young Adult (36+)</option></select>
+<label for="ec">Assembly</label><select id="ec"><option>Central</option><option>Maranatha</option><option>Nsumfa</option><option>Berea</option><option>Bethel</option><option>NIC</option><option>External</option></select>
 <label for="ed">Dietary notes</label><input type="text" id="ed"><div class="err" id="eerr"></div>
 <div class="bar"><button class="btn sm g" id="esave" type="button">Save changes</button><button class="btn sm" type="button" id="ecancel">Cancel</button></div></form></dialog>
 <script>
@@ -40,5 +42,12 @@ $('esave').onclick=async()=>{try{await api('update',{id:editId,fields:{name:$('e
 $('csv').onclick=()=>{const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
  const rows=[['Ref','Name','Phone','Age','Assembly','Diet','Paid','Registered']].concat(regs.map(r=>[r.id,r.name,r.phone,r.age,r.church,r.diet,r.paid?'Yes':'No',new Date(r.t).toISOString()]));
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));a.download='waiting-room-registrations.csv';a.click()};
+function parseCSV(t){const rows=[];let r=[],f='',q=false;t=t.replace(/^\ufeff/,'');for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}else if(c=='"')q=true;else if(c==','){r.push(f);f=''}else if(c=='\n'||c=='\r'){if(c=='\r'&&t[i+1]=='\n')i++;r.push(f);f='';rows.push(r);r=[]}else f+=c}if(f||r.length){r.push(f);rows.push(r)}return rows.filter(r=>r.some(x=>x.trim()))}
+$('imp').onchange=async e=>{const file=e.target.files[0];if(!file)return;const m=parseCSV(await file.text());if(m.length<2)return alert('The file looks empty.');
+ const h=m[0].map(x=>x.toLowerCase()),ix=k=>h.findIndex(x=>k.some(y=>x.includes(y))),c={n:ix(['name']),p:ix(['phone']),a:ix(['age']),c:ix(['church','assembly']),d:ix(['diet']),y:ix(['paid'])};
+ if(c.n<0||c.c<0)return alert('Need columns named "name" and "church".');
+ const g=(r,i)=>i<0?'':(r[i]||'').trim(),rows=m.slice(1).map(r=>({name:g(r,c.n),phone:g(r,c.p),age:g(r,c.a),church:g(r,c.c),diet:g(r,c.d),paid:/^(y|yes|true|1|paid)/i.test(g(r,c.y))}));
+ if(!confirm('Import '+rows.length+' registrants?'))return;
+ try{const d=await api('import',{rows});$('ierr').textContent='Added '+d.added+'. Skipped '+d.skipped.length+(d.skipped.length?': '+d.skipped.slice(0,8).join('; '):'');await load()}catch(x){$('ierr').style.color='var(--r)';$('ierr').textContent=x.message}e.target.value=''};
 if(pw)load();setInterval(()=>{if(pw&&!$('dlg').open&&!document.hidden)load()},5000);
 </script></body></html>

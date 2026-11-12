@@ -15,4 +15,5 @@ Public page: `https://<your-site>.vercel.app/` · Admin: `/admin.html`
 ## Notes
 - Registration closes automatically after 28 Dec 2026 (edit `DEADLINE` in `api/_lib.js`).
 - Assemblies and age ranges are validated on the server (`api/_lib.js`) and listed in `index.html` / `admin.html`.
+- Admin page → **Import registrants (CSV)** bulk-adds people (columns: name, phone, age, church).
 - Phone numbers are only ever returned by `/api/admin` (password required).
