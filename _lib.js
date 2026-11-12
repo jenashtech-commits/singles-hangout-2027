@@ -4,8 +4,8 @@ const TOK = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKE
 const KEY = 'wr:regs';
 const ASSEMBLIES = ['Central', 'Maranatha', 'Nsumfa', 'Berea', 'Bethel', 'NIC', 'External'];
 const AGES = ['Young Adult (20–25)', 'Young Adult (26–35)', 'Young Adult (36+)'];
-// Registration closes end of 28 Dec 2026 (Ghana = UTC)
-const DEADLINE = Date.UTC(2026, 11, 28, 23, 59, 59);
+// Registration closes end of 23 Dec 2026 (Ghana = UTC)
+const DEADLINE = Date.UTC(2026, 11, 23, 23, 59, 59);
 
 async function redis(...cmd) {
   if (!URL_ || !TOK) throw new Error('Database not connected');

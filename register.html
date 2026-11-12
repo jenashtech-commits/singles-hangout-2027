@@ -1,0 +1,112 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Register – The Waiting Room</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#14420e">
+<link rel="stylesheet" href="style.css?v=3"><style>
+.vs{max-width:560px;margin:-20px auto 0;padding:0 16px}
+.vs-card{background:linear-gradient(145deg,#5a3722,#2a1a10);color:#fff;border-radius:22px;padding:22px 20px;text-align:center;box-shadow:0 10px 28px #0003;min-height:150px;display:flex;flex-direction:column;justify-content:center}
+.vs-card q{display:block;font:italic 1.1rem/1.5 Georgia,serif;transition:opacity .5s}.vs-card q::before,.vs-card q::after{content:""}
+.vs-card cite{display:block;margin-top:10px;color:var(--y);font-style:normal;font-weight:700;font-size:.9rem;transition:opacity .5s}
+.vs-card.f q,.vs-card.f cite{opacity:0}
+.back{display:inline-block;color:#fff;text-decoration:none;font-size:.9rem;margin-bottom:8px;opacity:.9}
+#dbBtn{position:fixed;right:16px;bottom:16px;z-index:20;border:0;border-radius:999px;padding:12px 18px;font:700 .95rem "Poppins",system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,var(--o),var(--r));box-shadow:0 8px 20px #0005;cursor:pointer}
+#db{position:fixed;right:16px;bottom:16px;z-index:30;width:min(94vw,360px);height:min(80vh,500px);background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:20px;box-shadow:0 14px 40px #0006;display:flex;flex-direction:column;overflow:hidden}
+#db header{background:var(--g1);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+#db header small{display:block;opacity:.8;font-size:.75rem}#db header button{background:none;border:0;color:#fff;font-size:1.4rem;cursor:pointer}
+#msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.m{max-width:86%;padding:8px 12px;border-radius:14px;font-size:.92rem;white-space:pre-line}
+.m.b{background:var(--bg);border:1px solid var(--ln);align-self:flex-start}.m.u{background:var(--g2);color:#fff;align-self:flex-end}
+#chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 8px}
+#chips button{border:1px solid var(--g2);background:none;color:var(--g2);border-radius:999px;padding:4px 10px;font-size:.78rem;cursor:pointer}
+#cf{display:flex;gap:6px;padding:10px;border-top:1px solid var(--ln)}#cf input{flex:1;padding:10px;border:1.5px solid var(--ln);border-radius:12px;font:inherit;background:var(--bg);color:var(--tx);min-width:0}
+</style></head><body>
+<section class="hero" style="padding-bottom:50px"><a class="back" href="index.html">← Back to main page</a>
+<h1 style="margin-top:6px">Register for <span>The Waiting Room</span></h1><p>Monday 28th December 2026 · Hidden View (Kasoa Krispol City)</p></section>
+<div class="vs"><div class="vs-card" id="vc"><q id="vq"></q><cite id="vr"></cite></div></div>
+<main class="wrap">
+<h2>Register</h2>
+<div class="card" id="closed" hidden><b>Registration has closed.</b><p class="hint">Thank you for your interest. Please contact your local leadership.</p></div>
+<div class="card" id="formCard"><form id="f" novalidate>
+<input class="hp" type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+<label for="name">Full name <i>*</i></label><input type="text" id="name" placeholder="First and last name" autocomplete="name">
+<label for="phone">Phone number (WhatsApp) <i>*</i></label><input type="tel" id="phone" placeholder="e.g. 0241234567" autocomplete="tel"><div class="hint">Used for event updates and payment verification.</div>
+<label>Age range / category <i>*</i></label>
+<label class="opt"><input type="radio" name="age" value="Young Adult (20–25)">Young Adult (20–25)</label>
+<label class="opt"><input type="radio" name="age" value="Young Adult (26–35)">Young Adult (26–35)</label>
+<label class="opt"><input type="radio" name="age" value="Young Adult (36+)">Young Adult (36+)</label>
+<label for="church">Local church / assembly <i>*</i></label><select id="church"><option value="">Choose</option><option>Central</option><option>Maranatha</option><option>Nsumfa</option><option>Berea</option><option>Bethel</option><option>NIC</option><option>External</option></select>
+<label for="diet">Dietary restrictions / allergies</label><input type="text" id="diet" maxlength="200" placeholder="Any specific dietary needs for the meal">
+<div class="pay"><b>Payment instructions</b><br>Send the registration fee of <b>GHS 150</b> to your local leadership. Slots are confirmed only upon receipt of payment.</div>
+<label class="opt"><input type="checkbox" id="ack">I have read the payment instruction <i>*</i></label>
+<div class="err" id="err" role="alert"></div><button class="btn" id="go" style="width:100%">Submit registration</button></form></div>
+<div class="card ok" id="done" hidden><div class="tick">🎉</div><h2 style="margin:0" id="hi"></h2><p>You’re on the list! Keep your reference code:</p><div class="ref" id="ref"></div>
+<span class="badge" id="st">Awaiting payment</span><p class="hint">This status updates live once your leader confirms payment.</p><a class="btn sm g" href="index.html">Back to main page</a></div>
+</main>
+<footer>The Church of Pentecost · Anyaa District Youth Ministry</footer>
+
+<button id="dbBtn">💬 Ask Deborah</button>
+<div id="db" hidden><header><div><b>Deborah</b><small>Ask me about the programme</small></div><button id="dbX" aria-label="Close">×</button></header>
+<div id="msgs"></div><div id="chips"></div>
+<form id="cf"><input id="ci" placeholder="Type your question…" autocomplete="off"><button class="btn sm" type="submit">Send</button></form></div>
+<script>
+const $=id=>document.getElementById(id);
+let ref=null;try{ref=localStorage.getItem('wr_ref')}catch(e){}
+/* Bible verses (KJV) */
+const V=[["Love suffereth long, and is kind; love envieth not; love vaunteth not itself, is not puffed up.","1 Corinthians 13:4"],
+["Many waters cannot quench love, neither can the floods drown it.","Song of Solomon 8:7"],
+["We love him, because he first loved us.","1 John 4:19"],
+["Two are better than one; because they have a good reward for their labour.","Ecclesiastes 4:9"],
+["Whoso findeth a wife findeth a good thing, and obtaineth favour of the LORD.","Proverbs 18:22"],
+["And above all these things put on charity, which is the bond of perfectness.","Colossians 3:14"],
+["Let all your things be done with charity.","1 Corinthians 16:14"],
+["Delight thyself also in the LORD; and he shall give thee the desires of thine heart.","Psalm 37:4"],
+["Be still, and know that I am God.","Psalm 46:10"],
+["Beloved, let us love one another: for love is of God.","1 John 4:7"]];
+let vi=Math.floor(Math.random()*V.length);
+function showV(){$('vq').textContent='“'+V[vi][0]+'”';$('vr').textContent=V[vi][1]}
+showV();setInterval(()=>{$('vc').classList.add('f');setTimeout(()=>{vi=(vi+1)%V.length;showV();$('vc').classList.remove('f')},500)},7000);
+/* Registration */
+async function refresh(){
+ try{const d=await (await fetch('/api/public'+(ref?'?ref='+encodeURIComponent(ref):''),{cache:'no-store'})).json();
+  if(d.closed&&!d.me){$('formCard').hidden=true;$('closed').hidden=false}
+  if(d.me){$('formCard').hidden=true;$('closed').hidden=true;$('done').hidden=false;
+   $('hi').textContent='Thank you, '+d.me.name.split(' ')[0]+'!';$('ref').textContent=ref;
+   $('st').textContent=d.me.paid?'✅ Payment confirmed – slot secured':'Awaiting payment';$('st').className='badge'+(d.me.paid?' p':'')}
+ }catch(e){}}
+$('f').onsubmit=async e=>{e.preventDefault();const err=$('err');err.textContent='';
+ const b={name:$('name').value,phone:$('phone').value,age:(document.querySelector('input[name=age]:checked')||{}).value,church:$('church').value,diet:$('diet').value,website:$('website').value};
+ if(b.name.trim().split(/\s+/).length<2)return err.textContent='Please enter your first and last name.';
+ if(b.phone.replace(/\D/g,'').length<9)return err.textContent='Please enter a valid phone number.';
+ if(!b.age)return err.textContent='Please choose your age range.';
+ if(!b.church)return err.textContent='Please choose your local assembly.';
+ if(!$('ack').checked)return err.textContent='Please confirm you have read the payment instruction.';
+ const btn=$('go');btn.disabled=true;btn.textContent='Submitting…';
+ try{const r=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const d=await r.json();
+  if(!r.ok)err.textContent=d.error||'Something went wrong.';else{ref=d.ref;try{localStorage.setItem('wr_ref',ref)}catch(x){}await refresh();window.scrollTo({top:0,behavior:'smooth'})}
+ }catch(x){err.textContent='Network error. Please try again.'}
+ btn.disabled=false;btn.textContent='Submit registration'};
+refresh();setInterval(()=>{if(!document.hidden)refresh()},5000);
+/* Deborah */
+const KB=[
+[/hello|hi\b|hey|good (morning|afternoon|evening)/,"Hello! I’m Deborah 😊 Ask me anything about The Waiting Room: date, venue, cost, dress code, payment or registration."],
+[/when|date|day/,"📅 The Waiting Room is on Monday, 28th December 2026."],
+[/time|start|begin|o.?clock/,"⏰ It starts at 8:00 am."],
+[/where|venue|location|place|address|kasoa|hidden/,"📍 The venue is Hidden View (Kasoa Krispol City)."],
+[/cost|price|fee|rate|how much|ghs|150/,"🏷️ The registration fee is GHS 150."],
+[/pay|momo|money|confirm|slot/,"Send the GHS 150 registration fee to your local leadership. Your slot is confirmed only once payment is received, and your status on the main page updates when your leader confirms it."],
+[/deadline|close|last day|late/,"⌛ Registration and payment close on 23rd December 2026."],
+[/dress|wear|outfit|attire|cloth/,"👗 Dress code: Smart Casual / Elegant Lounge."],
+[/who|age|eligible|allowed|married|single|audience|young|external|other church/,"The programme is for Young Adults only (age ranges 20–25, 26–35 and 36+), hosted by The Church of Pentecost, Anyaa District Youth Ministry. Members of other assemblies can register as “External”."],
+[/diet|allerg|food|eat|meal|vegetarian|halal/,"🍽️ A meal is served. Please put any dietary restrictions or allergies in the “Dietary restrictions” box on the form."],
+[/regist|sign|join|form|ref|code|status/,"Fill in the form on this page. You’ll get a reference code (WR-XXXXXX), and your payment status shows on the main page when you return from the same device."],
+[/what|about|programme|program|theme|waiting room|hangout|activit/,"The Waiting Room is a Singles Hangout: an inspiring time of fellowship, connection and relaxation for young adults."],
+[/contact|call|phone|help|leader|reach/,"Please contact your local assembly leadership or the Youth Ministry for anything I can’t answer."],
+[/thank/,"You’re welcome! See you on 28th December 🌿"]];
+const CH=["When is it?","Where is it?","How much?","Dress code?","How do I pay?"];
+function add(t,c){const m=document.createElement('div');m.className='m '+c;m.textContent=t;$('msgs').appendChild(m);$('msgs').scrollTop=1e9}
+function ask(q){add(q,'u');const l=q.toLowerCase();const k=KB.find(x=>x[0].test(l));
+ setTimeout(()=>add(k?k[1]:"I’m not sure about that one. I can help with the date, time, venue, cost, payment, dress code and registration. For anything else, please contact your local leadership.",'b'),350)}
+$('chips').innerHTML=CH.map(c=>'<button type="button">'+c+'</button>').join('');
+$('chips').onclick=e=>{if(e.target.tagName==='BUTTON')ask(e.target.textContent)};
+$('cf').onsubmit=e=>{e.preventDefault();const v=$('ci').value.trim();if(!v)return;$('ci').value='';ask(v)};
+$('dbBtn').onclick=()=>{$('db').hidden=false;$('dbBtn').hidden=true;if(!$('msgs').children.length)add("Hi, I’m Deborah 👋 How can I help you with The Waiting Room?",'b')};
+$('dbX').onclick=()=>{$('db').hidden=true;$('dbBtn').hidden=false};
+</script></body></html>
