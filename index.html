@@ -23,7 +23,7 @@
 <h2>Event details</h2><div class="grid">
 <div class="d"><small>📅 Date</small><b>Monday, 28th December 2026</b></div><div class="d"><small>⏰ Time</small><b>8:00 am</b></div>
 <div class="d"><small>📍 Venue</small><b>Hidden View (Kasoa Krispol City)</b></div><div class="d"><small>🏷️ Rate</small><b>GHS 150</b></div>
-<div class="d"><small>⌛ Registration deadline</small><b>23rd December 2026</b></div><div class="d"><small>👗 Dress code</small><b>Smart Casual / Elegant Lounge</b></div>
+<div class="d"><small>⌛ Registration deadline</small><b>30th November 2026</b></div><div class="d"><small>💳 Payment deadline</small><b>15th December 2026</b></div><div class="d" style="grid-column:1/-1"><small>👗 Dress code</small><b>Smart Casual / Elegant Lounge</b></div>
 <div class="d wide"><small>Target audience</small><b>Young Adults Only · The Church of Pentecost, Anyaa District Youth Ministry</b></div></div>
 <div class="card ok" id="mine" hidden><div class="tick">🎉</div><h2 style="margin:0" id="hi"></h2><p>You’re registered. Your reference code:</p><div class="ref" id="ref"></div><span class="badge" id="st">Awaiting payment</span><p class="hint">This status updates live once your leader confirms payment.</p></div>
 <div class="card ok" id="cta" style="margin-top:24px"><h2 style="margin:0 0 8px">Ready to join us?</h2><p class="hint">Register in under a minute, read a few verses on love, and chat with Deborah if you have questions.</p><a class="btn" href="register.html" id="cta2">Register now</a></div>
@@ -40,7 +40,7 @@ async function refresh(){
    $('st').textContent=d.me.paid?'✅ Payment confirmed – slot secured':'Awaiting payment';$('st').className='badge'+(d.me.paid?' p':'')}
   else if(d.closed){$('cta2').hidden=true;$('regBtn').textContent='Registration closed';$('regBtn').removeAttribute('href')}
  }catch(e){}}
-const REG_END=Date.UTC(2026,11,23,23,59,59),EV_START=Date.UTC(2026,11,28,8,0,0),EV_END=Date.UTC(2026,11,28,20,0,0);
+const REG_END=Date.UTC(2026,10,30,23,59,59),EV_START=Date.UTC(2026,11,28,8,0,0),EV_END=Date.UTC(2026,11,28,20,0,0);
 function box(ms){const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;
  return '<div class="cd-row">'+[[d,'Days'],[h,'Hours'],[m,'Mins'],[x,'Secs']].map(a=>'<div class="cd-box"><b>'+String(a[0]).padStart(2,'0')+'</b><small>'+a[1]+'</small></div>').join('')+'</div>'}
 function tick(){const n=Date.now();
